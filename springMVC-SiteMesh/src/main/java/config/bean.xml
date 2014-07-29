@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<context:component-scan base-package="com.biz.user.dao"/>
+	<context:component-scan base-package="com.biz.user.service"/>	
+	
+	<!--  
+	<jee:jndi-lookup jndi-name="jdbc/mysql" id="dataSource"/>
+	  -->
+	<!--    
+	 <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+     	<property name="jndiName" value="java:comp/env/jdbc/mysql"/>
+     </bean>
+	 -->
+	<!-- mysql -->	  	 	 
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://1.234.79.59:3306/mydatabase" />
+		<property name="username" value="root" />
+		<property name="password" value="rplinux" />
+	</bean>		 
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:SqlConfigMap.xml"/>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:dbConfig/users.xml</value>
+			</list>
+		</property>
+	</bean>		
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+</beans>
